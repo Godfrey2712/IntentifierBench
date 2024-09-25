@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Authorship Identification</title>
     <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
@@ -31,10 +32,21 @@
         <div id="result" class="result-section">
             <h2>Result</h2>
             <p id="author-result">Click on a document to identify the author.</p>
+            
+            <!-- Chart Container -->
+            <h3>Illocutionary Force Profiles</h3>
+            <canvas id="profileChart" width="400" height="200"></canvas>
         </div>
     </div>
 
     <script>
+        function getRandomColor(opacity) {
+            const r = Math.floor(Math.random() * 255);
+            const g = Math.floor(Math.random() * 255);
+            const b = Math.floor(Math.random() * 255);
+            return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+        }
+
         function identifyAuthor(doc) {
             fetch('/identify', {
                 method: 'POST',
@@ -46,6 +58,62 @@
             .then(response => response.json())
             .then(data => {
                 document.getElementById('author-result').innerText = 'The author of ' + doc + ' is: ' + data.author;
+
+                const illocutionaryLabels = Object.values(data.labels);
+
+                const authorProfiles = data.author_profiles;
+                const unknownProfile = data.unknown_profile;
+
+                const datasets = [];
+
+                // Create datasets for each known author
+                Object.keys(authorProfiles).forEach(author => {
+                    const sentenceLabels = authorProfiles[author];
+                    const frequencies = new Array(illocutionaryLabels.length).fill(0);
+
+                    // Count how often each illocutionary force appears
+                    sentenceLabels.forEach(label => frequencies[label]++);
+
+                    const backgroundColor = getRandomColor(0.2);  // Generate random color with opacity
+                    const borderColor = getRandomColor(1);        // Same color with full opacity for border
+
+                    datasets.push({
+                        label: author,
+                        data: frequencies,
+                        backgroundColor: backgroundColor,
+                        borderColor: borderColor,
+                        borderWidth: 1
+                    });
+                });
+
+                // Dataset for unknown document
+                const unknownFrequencies = new Array(illocutionaryLabels.length).fill(0);
+                unknownProfile.forEach(label => unknownFrequencies[label]++);
+
+                datasets.push({
+                    label: 'Unknown Document',
+                    data: unknownFrequencies,
+                    backgroundColor: 'rgba(255, 159, 64, 0.2)',  // Orange for the unknown doc
+                    borderColor: 'rgba(255, 159, 64, 1)',        // Orange border
+                    borderWidth: 1
+                });
+
+                // Create the chart
+                const ctx = document.getElementById('profileChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: illocutionaryLabels,
+                        datasets: datasets
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
             });
         }
     </script>
