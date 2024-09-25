@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authorship Identification</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Authorship Identification</h1>
+
+        <div class="section">
+            <h2>Known Author Documents</h2>
+            <ul>
+                {% for doc in known_docs %}
+                    <li>{{ doc }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Unknown Author Documents</h2>
+            <ul>
+                {% for doc in unknown_docs %}
+                    <li>{{ doc }} <button onclick="identifyAuthor('{{ doc }}')">Identify Author</button></li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div id="result" class="result-section">
+            <h2>Result</h2>
+            <p id="author-result">Click on a document to identify the author.</p>
+        </div>
+    </div>
+
+    <script>
+        function identifyAuthor(doc) {
+            fetch('/identify', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'unknown_doc=' + doc
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('author-result').innerText = 'The author of ' + doc + ' is: ' + data.author;
+            });
+        }
+    </script>
+</body>
+</html>
