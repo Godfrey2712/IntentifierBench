@@ -6,7 +6,8 @@ import os
 import nltk
 import numpy as np
 
-nltk.download('punkt')
+#nltk.download('punkt')
+nltk.download('punkt_tab')
 from nltk.tokenize import sent_tokenize
 
 app = Flask(__name__)
