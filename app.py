@@ -3,6 +3,7 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 import torch
 from sklearn.metrics.pairwise import cosine_similarity
 import os
+import re
 import nltk
 import numpy as np
 
@@ -24,7 +25,7 @@ illoc_labels = illoc_model.config.id2label
 illoc_pairs_labels = pair_model.config.id2label
 
 # Directory where documents are stored
-DOCUMENTS_PATH = "./documents/"
+DOCUMENTS_PATH = "./documents_pan19/documents00001/"
 
 def extract_classification(text, model, tokenizer):
     sentences = sent_tokenize(text)
@@ -62,6 +63,18 @@ def extract_classification_pairs(text, model, tokenizer):
 
     document_embedding = np.mean(sentence_pair_embeddings, axis=0)
     return predicted_labels, document_embedding
+
+def extract_author_from_filename(filename):
+    if filename.startswith("document_") and filename.lower().endswith(".txt"):
+        return filename[len("document_"):-len(".txt")]
+    m = re.match(r"candidate\d+\.txt$", filename, re.IGNORECASE)
+    if m:
+        return os.path.splitext(filename)[0]  # candidate00001 etc
+    m2 = re.match(r"unknown\d+\.txt$", filename, re.IGNORECASE)
+    if m2:
+        return os.path.splitext(filename)[0]  # unknown00001 etc
+    # fallback for generic names
+    return os.path.splitext(filename)[0]
 
 @app.route('/')
 def index():
@@ -112,13 +125,13 @@ def identify_author():
         if selected_model == 'model1':
             if unknown_embedding_1 is not None and known_embedding_1 is not None:
                 similarity = cosine_similarity([unknown_embedding_1], [known_embedding_1])[0][0]
-                author_name = doc.split('_')[1].split('.')[0]
+                author_name = extract_author_from_filename(doc)
                 author_similarities[author_name] = similarity
 
         elif selected_model == 'model2':
             if unknown_embedding_2 is not None and known_embedding_2 is not None:
                 similarity = cosine_similarity([unknown_embedding_2], [known_embedding_2])[0][0]
-                author_name = doc.split('_')[1].split('.')[0]
+                author_name = extract_author_from_filename(doc)
                 author_similarities[author_name] = similarity
 
         elif selected_model == 'both':
@@ -132,7 +145,7 @@ def identify_author():
                 
                 # Calculate cosine similarity
                 similarity = cosine_similarity([unknown_embedding], [known_embedding])[0][0]
-                author_name = doc.split('_')[1].split('.')[0]
+                author_name = extract_author_from_filename(doc)
                 author_similarities[author_name] = similarity
 
         # Store profiles for the author
