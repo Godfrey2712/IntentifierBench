@@ -1,5 +1,7 @@
 # IntentifierBench
 
+[![DOI](https://zenodo.org/badge/862981250.svg)](https://doi.org/10.5281/zenodo.19369388)
+
 **Author:** Godfrey Inyama
 
 ---
@@ -198,3 +200,18 @@ Select model, choose unknown document, view results.
 ## Summary
 
 IntentifierBench provides a discourse-aware, neuro-symbolic framework for authorship identification based on communicative behaviour rather than surface-level text features.
+
+## 📚 Citation
+
+If you use this work, please cite:
+
+```bibtex
+@software{godfrey_inyama_2026_19369388,
+  author       = {Godfrey Inyama},
+  title        = {IntentifierBench},
+  year         = 2026,
+  publisher    = {Zenodo},
+  version      = {v1.1},
+  doi          = {10.5281/zenodo.19369388},
+  url          = {https://doi.org/10.5281/zenodo.19369388}
+}
