@@ -43,7 +43,6 @@ function identifyAuthor(doc) {
 }
 
 // Function to display the profiles as bar charts
-// Function to display the profiles as bar charts
 function displayProfile(profileTitle, unknownProfile, authorProfiles, labels) {
     const profileSection = document.getElementById('profileSection');
 
