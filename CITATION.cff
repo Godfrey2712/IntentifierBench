@@ -1,9 +1,13 @@
 ```yaml
 cff-version: 1.2.0
-title: "IntentifierBench"
+message: "If you use this software, please cite it as below."
+
 authors:
   - family-names: "Inyama"
     given-names: "Godfrey"
-year: 2026
+
+title: "IntentifierBench: Discourse-Aware Authorship Identification Benchmark"
 version: "v1.1"
-doi: 10.5281/zenodo.19369388
+doi: "10.5281/zenodo.19369388"
+date-released: 2026-04-01
+url: "https://github.com/Godfrey2712/IntentifierBench"
