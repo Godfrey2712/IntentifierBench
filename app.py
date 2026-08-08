@@ -19,6 +19,9 @@ from nltk.tokenize import sent_tokenize
 
 app = Flask(__name__)
 
+# Allow tests to skip heavy model loading
+SKIP_MODEL_LOAD = os.environ.get('SKIP_MODEL_LOAD') == '1'
+
 # -------------------------------
 # ⏱ Utility Timer
 # -------------------------------
@@ -30,27 +33,43 @@ def log_time(stage, start_time):
 # -------------------------------
 # Load Models (timed)
 # -------------------------------
-start = time.time()
+illoc_model = None
+illoc_tokenizer = None
+pair_model = None
+pair_tokenizer = None
+illoc_labels = {}
+illoc_pairs_labels = {}
 
-illoc_model = AutoModelForSequenceClassification.from_pretrained(
-    "Godfrey2712/amf_illoc_force_intent_recognition"
-)
-illoc_tokenizer = AutoTokenizer.from_pretrained(
-    "Godfrey2712/amf_illoc_force_intent_recognition"
-)
+if not SKIP_MODEL_LOAD:
+    start = time.time()
 
-pair_model = AutoModelForSequenceClassification.from_pretrained(
-    "Godfrey2712/arg_mining_us2016_locutions"
-)
-pair_tokenizer = AutoTokenizer.from_pretrained(
-    "Godfrey2712/arg_mining_us2016_locutions"
-)
+    illoc_model = AutoModelForSequenceClassification.from_pretrained(
+        "Godfrey2712/amf_illoc_force_intent_recognition"
+    )
+    illoc_tokenizer = AutoTokenizer.from_pretrained(
+        "Godfrey2712/amf_illoc_force_intent_recognition"
+    )
 
-log_time("Model Loading", start)
+    pair_model = AutoModelForSequenceClassification.from_pretrained(
+        "Godfrey2712/arg_mining_us2016_locutions"
+    )
+    pair_tokenizer = AutoTokenizer.from_pretrained(
+        "Godfrey2712/arg_mining_us2016_locutions"
+    )
 
-# Labels
-illoc_labels = illoc_model.config.id2label
-illoc_pairs_labels = pair_model.config.id2label
+    log_time("Model Loading", start)
+
+    # Labels
+    illoc_labels = illoc_model.config.id2label
+    illoc_pairs_labels = pair_model.config.id2label
+else:
+    # Provide safe defaults so importing app in tests doesn't break early
+    illoc_model = None
+    illoc_tokenizer = None
+    pair_model = None
+    pair_tokenizer = None
+    illoc_labels = {}
+    illoc_pairs_labels = {}
 
 DOCUMENTS_PATH = "./documents_pan19/documents00001/"
 
@@ -162,6 +181,18 @@ def identify_author():
     unknown_doc_name = request.form['unknown_doc']
     selected_model = request.form['selected_model']
 
+    # ---------------------------
+    # Validate filename against whitelist
+    # ---------------------------
+    try:
+        available_files = os.listdir(DOCUMENTS_PATH)
+    except Exception as e:
+        return jsonify({'error': f'Documents directory not found: {str(e)}'}), 500
+
+    if unknown_doc_name not in available_files:
+        return jsonify({'error': 'Invalid filename: file not found in documents directory.'}), 400
+
+    # Safe join after validation
     unknown_doc_path = os.path.join(DOCUMENTS_PATH, unknown_doc_name)
 
     # ---------------------------
