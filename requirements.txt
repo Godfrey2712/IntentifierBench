@@ -6,3 +6,4 @@ nltk
 numpy
 sentence-transformers
 gunicorn
+pytest
