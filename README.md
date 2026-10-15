@@ -206,7 +206,7 @@ IntentifierBench provides a discourse-aware, neuro-symbolic framework for author
 If you use this work, please cite:
 
 ```bibtex
-@software{godfrey_inyama_2026_19369388,
+[@software{godfrey_inyama_2026_19369388,
   author       = {Godfrey Inyama},
   title        = {IntentifierBench},
   year         = 2026,
@@ -215,3 +215,4 @@ If you use this work, please cite:
   doi          = {10.5281/zenodo.19369388},
   url          = {https://doi.org/10.5281/zenodo.19369388}
 }
+](https://aclanthology.org/2026.icnlsp-1.11/)
