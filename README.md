@@ -206,13 +206,17 @@ IntentifierBench provides a discourse-aware, neuro-symbolic framework for author
 If you use this work, please cite:
 
 ```bibtex
-[@software{godfrey_inyama_2026_19369388,
-  author       = {Godfrey Inyama},
-  title        = {IntentifierBench},
-  year         = 2026,
-  publisher    = {Zenodo},
-  version      = {v1.1},
-  doi          = {10.5281/zenodo.19369388},
-  url          = {https://doi.org/10.5281/zenodo.19369388}
+@inproceedings{inyama-2026-intentifierbench,
+    title = "{I}ntentifier{B}ench: An Open-Source Web Tool for Benchmarking Authorship Identification using Illocutionary Force Large Language Models Based Classifiers",
+    author = "Inyama, Godfrey",
+    editor = "Abbas, Mourad  and
+      Freihat, Abed Alhakim",
+    booktitle = "Proceedings of the 9th International Conference on Natural Language and Speech Processing ({ICNLSP}-2026)",
+    month = sep,
+    year = "2026",
+    address = "University of Trento, Trento, Italy",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/2026.icnlsp-1.11/",
+    pages = "107--116",
+    ISBN = "979-8-89176-458-3"
 }
-](https://aclanthology.org/2026.icnlsp-1.11/)
