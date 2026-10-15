@@ -187,7 +187,7 @@ Select model, choose unknown document, view results.
 ### Thesis
 
 ```bibtex
-@phdthesis{inyama2024exploiting,
+@mphilthesis{inyama2024exploiting,
     title={Exploiting Illocutionary Forces in Dialogue Structures for Enhancing Authorship Identification},
     author={Inyama, Godfrey},
     school={University of Dundee},
